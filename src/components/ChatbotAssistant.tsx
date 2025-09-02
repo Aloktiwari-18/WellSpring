@@ -8,9 +8,9 @@ interface Message {
   timestamp: Date;
 }
 
-const API_KEY =
-  "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"; // Replace with your real key
-const MODEL = "mistralai/mistral-7b-instruct";
+// ✅ API_KEY aur MODEL env se lo
+const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
+const MODEL = import.meta.env.VITE_MODEL || "mistralai/mistral-7b-instruct";
 
 // Simple sentiment detector
 function detectSentiment(text: string): string {
@@ -63,7 +63,7 @@ const ChatbotAssistant: React.FC = () => {
     setInputValue("");
     setIsTyping(true);
 
-    const mood = detectSentiment(inputValue);
+    const mood = detectSentiment(userMessage.content);
 
     if (mood === "crisis") {
       setTimeout(() => {
@@ -83,33 +83,30 @@ const ChatbotAssistant: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        "https://openrouter.ai/api/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${API_KEY}`, // ✅ fixed
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: MODEL,
-            messages: [
-              {
-                role: "system",
-                content: "You are an empathetic and supportive AI friend.",
-              },
-              ...messages.map((msg) => ({
-                role: msg.type === "user" ? "user" : "assistant",
-                content: msg.content,
-              })),
-              {
-                role: "user",
-                content: `Mood: ${mood}. Message: ${inputValue}`, // ✅ fixed
-              },
-            ],
-          }),
-        }
-      );
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${API_KEY}`, // ✅ env key
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          messages: [
+            {
+              role: "system",
+              content: "You are an empathetic and supportive AI friend.",
+            },
+            ...messages.map((msg) => ({
+              role: msg.type === "user" ? "user" : "assistant",
+              content: msg.content,
+            })),
+            {
+              role: "user",
+              content: `Mood: ${mood}. Message: ${userMessage.content}`,
+            },
+          ],
+        }),
+      });
 
       const data = await response.json();
       const botReply =
@@ -131,7 +128,7 @@ const ChatbotAssistant: React.FC = () => {
         {
           id: (Date.now() + 3).toString(),
           type: "bot",
-          content: `Error: ${error.message}`, // ✅ fixed
+          content: `⚠️ Error: ${error.message}`,
           timestamp: new Date(),
         },
       ]);
