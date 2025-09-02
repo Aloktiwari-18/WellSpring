@@ -1,223 +1,166 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import StudentNavbar from '../components/StudentNavbar';
-import { BookOpen, Headphones, ExternalLink, ArrowLeft, Search } from 'lucide-react';
+import { BookOpen, Headphones, ArrowLeft, Search, Star } from 'lucide-react';
 
 interface Book {
-  id: string;
+  id: number;
   title: string;
   author: string;
-  category: string;
   description: string;
-  readLink: string;
-  audioLink?: string;
-  imageUrl: string;
   rating: number;
+  imageUrl: string;
 }
 
-const BooksHub: React.FC = () => {
-  const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [searchTerm, setSearchTerm] = useState('');
+const books: Book[] = [
+  {
+    id: 1,
+    title: 'The Power of Now',
+    author: 'Eckhart Tolle',
+    description: 'A guide to spiritual enlightenment and living in the present moment.',
+    rating: 4.8,
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcTeHrXkAz4VPjJUS-wTd87rXomWJpeQ-isAmnOI1Wra6LH9IQF_UKD7lIEcMSHTNjWqwmcdS3ANh1RbYW0NEtE0nQjxz1UPb-Q-X48YT7ucoA6PlmDJEq4U',
+  },
+  {
+    id: 2,
+    title: 'Atomic Habits',
+    author: 'James Clear',
+    description: 'An easy & proven way to build good habits & break bad ones.',
+    rating: 4.9,
+    imageUrl: 'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTJdHI1dz7Zj2nDlfUJIs77nYrFd-xsUyKqOF5LvY_nCVYRd7i6ImPQxgZtYXcQFXsnBdyKkE6jS6IOPMeHPr2_B7GeJN26',
+  },
+  {
+    id: 3,
+    title: 'The Subtle Art of Not Giving a F*ck',
+    author: 'Mark Manson',
+    description: 'A counterintuitive approach to living a good life.',
+    rating: 4.7,
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcR1A0txI1mRijJkoycMH6TEr7qVMkOuEMDm1YYW7n6tWrko5nD_h83-jSTNmH1ccwlQebB2SBlgXjGvL8uDW1FYCRYzHRDLfcSmJ7uhHtGVGebo5ye8eCVJ',
+  },
+  {
+    id: 4,
+    title: 'Think Like a Monk',
+    author: 'Jay Shetty',
+    description: 'Train your mind for peace and purpose every day.',
+    rating: 4.8,
+    imageUrl: 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcTydMoX-In6tIv9rDwnPraSmRm1Lqrm1CGbTrZX37lshY1tGGoADMxpqC9oT-hVilqDmaW9GSucmPVDVdvJkVfVxwT5zVpkcBOouBVRRIXu93VxgqRPAW96tg',
+  },
+];
 
-  const categories = ['All', 'Self-Help', 'Motivation', 'Productivity', 'Mindfulness', 'Stress Management'];
+const BookLibrary = () => {
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const books: Book[] = [
-    {
-      id: '1',
-      title: 'The Power of Now',
-      author: 'Eckhart Tolle',
-      category: 'Mindfulness',
-      description: 'A guide to spiritual enlightenment and living in the present moment.',
-      readLink: 'https://example.com/book1',
-      audioLink: 'https://example.com/audio1',
-      imageUrl: 'https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg?auto=compress&cs=tinysrgb&w=300',
-      rating: 4.8
-    },
-    {
-      id: '2',
-      title: 'Atomic Habits',
-      author: 'James Clear',
-      category: 'Productivity',
-      description: 'An easy and proven way to build good habits and break bad ones.',
-      readLink: 'https://example.com/book2',
-      audioLink: 'https://example.com/audio2',
-      imageUrl: 'https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg?auto=compress&cs=tinysrgb&w=300',
-      rating: 4.9
-    },
-    {
-      id: '3',
-      title: 'The Anxiety and Stress Solution',
-      author: 'Chloe Brotheridge',
-      category: 'Stress Management',
-      description: 'Practical techniques to overcome worry and live a calmer life.',
-      readLink: 'https://example.com/book3',
-      imageUrl: 'https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg?auto=compress&cs=tinysrgb&w=300',
-      rating: 4.6
-    },
-    {
-      id: '4',
-      title: 'Mindset: The New Psychology of Success',
-      author: 'Carol S. Dweck',
-      category: 'Motivation',
-      description: 'How we can learn to fulfill our potential through the power of growth mindset.',
-      readLink: 'https://example.com/book4',
-      audioLink: 'https://example.com/audio4',
-      imageUrl: 'https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg?auto=compress&cs=tinysrgb&w=300',
-      rating: 4.7
-    },
-    {
-      id: '5',
-      title: 'The 7 Habits of Highly Effective People',
-      author: 'Stephen R. Covey',
-      category: 'Self-Help',
-      description: 'Powerful lessons in personal change and effectiveness.',
-      readLink: 'https://example.com/book5',
-      audioLink: 'https://example.com/audio5',
-      imageUrl: 'https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg?auto=compress&cs=tinysrgb&w=300',
-      rating: 4.8
-    },
-    {
-      id: '6',
-      title: 'The Gifts of Imperfection',
-      author: 'Brené Brown',
-      category: 'Self-Help',
-      description: 'Let go of who you think you\'re supposed to be and embrace who you are.',
-      readLink: 'https://example.com/book6',
-      imageUrl: 'https://images.pexels.com/photos/1370295/pexels-photo-1370295.jpeg?auto=compress&cs=tinysrgb&w=300',
-      rating: 4.9
-    }
-  ];
-
-  const filteredBooks = books.filter(book => {
-    const matchesCategory = selectedCategory === 'All' || book.category === selectedCategory;
-    const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         book.author.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const filteredBooks = books.filter(
+    (book) =>
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <StudentNavbar activeSection="books" setActiveSection={() => {}} />
-      
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex items-center mb-8">
-          <button
-            onClick={() => navigate('/student-dashboard')}
-            className="flex items-center text-gray-600 hover:text-blue-500 mr-6 transition-colors duration-200"
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Dashboard
-          </button>
-          <div>
-            <h1 className="text-3xl font-light text-gray-800 mb-2">Books Hub</h1>
-            <p className="text-gray-600">Discover books to support your growth and wellbeing</p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 p-8">
+      {!selectedBook ? (
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">Book Library</h1>
 
-        {/* Search and Filters */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 mb-8">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search books or authors..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            
-            <div className="flex space-x-2 overflow-x-auto">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-200 ${
-                    selectedCategory === category
-                      ? 'bg-blue-500 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+          {/* Search bar */}
+          <div className="relative max-w-xl mx-auto mb-12">
+            <input
+              type="text"
+              placeholder="Search books or authors..."
+              className="w-full px-4 py-3 pl-12 rounded-xl border border-gray-200 shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Search className="absolute left-4 top-3.5 text-gray-400" size={20} />
           </div>
-        </div>
 
-        {/* Books Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBooks.map((book) => (
-            <div key={book.id} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <img
-                src={book.imageUrl}
-                alt={book.title}
-                className="w-full h-48 object-cover"
-              />
-              
-              <div className="p-6">
-                <div className="mb-3">
-                  <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
-                    {book.category}
-                  </span>
+          {/* Books grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {filteredBooks.map((book) => (
+              <div
+                key={book.id}
+                className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+                onClick={() => setSelectedBook(book)}
+              >
+                <div className="aspect-[2/3] relative">
+                  <img
+                    src={book.imageUrl}
+                    alt={book.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">{book.title}</h3>
-                <p className="text-gray-600 mb-2">by {book.author}</p>
-                <p className="text-gray-700 text-sm leading-relaxed mb-4">{book.description}</p>
-                
-                <div className="flex items-center mb-4">
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{book.title}</h3>
+                  <p className="text-sm text-gray-600 mb-3">by {book.author}</p>
+                  <div className="flex items-center mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-4 h-4 ${
+                          i < Math.floor(book.rating) ? 'text-yellow-500 fill-current' : 'text-gray-300'
+                        }`}
+                      />
+                    ))}
+                    <span className="ml-2 text-sm text-gray-600">{book.rating}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        // Book details page
+        <div className="max-w-4xl mx-auto">
+          <button
+            onClick={() => setSelectedBook(null)}
+            className="flex items-center text-indigo-600 hover:text-indigo-800 mb-8"
+          >
+            <ArrowLeft className="mr-2" size={20} />
+            Back to Library
+          </button>
+
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+              <div className="aspect-[2/3] relative">
+                <img
+                  src={selectedBook.imageUrl}
+                  alt={selectedBook.title}
+                  className="w-full h-full object-cover rounded-xl"
+                />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">{selectedBook.title}</h2>
+                <p className="text-lg text-gray-600 mb-6">by {selectedBook.author}</p>
+                <div className="flex items-center mb-6">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-4 h-4 ${
-                        i < Math.floor(book.rating) ? 'text-yellow-500 fill-current' : 'text-gray-300'
+                      className={`w-5 h-5 ${
+                        i < Math.floor(selectedBook.rating)
+                          ? 'text-yellow-500 fill-current'
+                          : 'text-gray-300'
                       }`}
                     />
                   ))}
-                  <span className="text-sm text-gray-600 ml-2">{book.rating}</span>
+                  <span className="ml-2 text-gray-600">{selectedBook.rating}</span>
                 </div>
-
-                <div className="flex space-x-3">
-                  <a
-                    href={book.readLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-center py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
-                  >
-                    <BookOpen className="w-4 h-4 inline mr-2" />
+                <p className="text-gray-700 mb-8">{selectedBook.description}</p>
+                <div className="flex gap-4">
+                  <button className="flex items-center px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors">
+                    <BookOpen className="mr-2" size={20} />
                     Read
-                  </a>
-                  
-                  {book.audioLink && (
-                    <a
-                      href={book.audioLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 bg-green-500 hover:bg-green-600 text-white text-center py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
-                    >
-                      <Headphones className="w-4 h-4 inline mr-2" />
-                      Listen
-                    </a>
-                  )}
+                  </button>
+                  <button className="flex items-center px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
+                    <Headphones className="mr-2" size={20} />
+                    Listen
+                  </button>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-
-        {filteredBooks.length === 0 && (
-          <div className="text-center py-12">
-            <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-medium text-gray-600 mb-2">No books found</h3>
-            <p className="text-gray-500">Try adjusting your search or category filter</p>
           </div>
-        )}
-      </main>
+        </div>
+      )}
     </div>
   );
 };
 
-export default BooksHub;
+export default BookLibrary;
