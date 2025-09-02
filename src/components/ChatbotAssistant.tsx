@@ -149,7 +149,7 @@ const ChatbotAssistant: React.FC = () => {
       <div className="flex items-center p-6 border-b border-gray-200">
         <MessageCircle className="w-6 h-6 text-blue-500 mr-3" />
         <h2 className="text-2xl font-semibold text-gray-800">
-          AI Wellness Assistant
+          WellSpring Friend
         </h2>
       </div>
 
