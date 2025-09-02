@@ -9,7 +9,7 @@ interface Message {
 }
 
 const API_KEY =
-  "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"; // Replace with your real key
+  "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"; // Replace with your real key
 const MODEL = "mistralai/mistral-7b-instruct";
 
 // Simple sentiment detector
@@ -152,7 +152,7 @@ const ChatbotAssistant: React.FC = () => {
       <div className="flex items-center p-6 border-b border-gray-200">
         <MessageCircle className="w-6 h-6 text-blue-500 mr-3" />
         <h2 className="text-2xl font-semibold text-gray-800">
-          WellSpring Friend
+          AI Wellness Assistant
         </h2>
       </div>
 
